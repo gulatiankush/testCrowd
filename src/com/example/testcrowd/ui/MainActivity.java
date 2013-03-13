@@ -1,13 +1,6 @@
-package com.example.testcrowd;
+package com.example.testcrowd.ui;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -16,6 +9,9 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.StrictMode;
+
+import com.example.testcrowd.R;
+import com.example.testcrowd.services.WebServices;
 
 //final AlertDialog.Builder adb = new AlertDialog.Builder(this);
 //		final Button postButton = (Button) findViewById(R.id.postButton);
@@ -36,6 +32,7 @@ import android.os.StrictMode;
 //				}
 //			}
 // });
+
 public class MainActivity extends Activity {
 
 	@Override
@@ -64,61 +61,13 @@ public class MainActivity extends Activity {
 				label2, Tab2Fragment.class);
 		tab.setTabListener(tl2);
 		actionBar.addTab(tab);
-		InputStream in = callService("AnkushG");
-		String result = convertStreamToString(in);
-		result += "";
-	}
 
-	private InputStream callService(String text) {
-		InputStream in = null;
+		InputStream in = WebServices.callService();
 
-		try {
-			URL url = new URL(
-					"http://192.168.2.6:8080/HelloServlet/HelloServlet");
-			URLConnection conn = url.openConnection();
-
-			HttpURLConnection httpConn = (HttpURLConnection) conn;
-			httpConn.setRequestMethod("POST");
-			httpConn.setDoInput(true);
-			httpConn.setDoOutput(true);
-			httpConn.connect();
-
-			DataOutputStream dataStream = new DataOutputStream(
-					conn.getOutputStream());
-
-			dataStream.writeBytes(text);
-			dataStream.flush();
-			dataStream.close();
-
-			int responseCode = httpConn.getResponseCode();
-			if (responseCode == HttpURLConnection.HTTP_OK) {
-				in = httpConn.getInputStream();
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return in;
-	}
-
-	private static String convertStreamToString(InputStream is) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return sb.toString();
+		// InputStream in = WebServices
+		// .createUser("{ \"firstName\":\"James\" , \"lastName\":\"Jerry\" }");
+		String result = WebServices.convertStreamToString(in);
+		result = result.toString();
 	}
 
 	private class TabListener<T extends Fragment> implements

@@ -1,4 +1,7 @@
-package com.example.testcrowd;
+package com.example.testcrowd.ui;
+
+import com.example.testcrowd.R;
+import com.example.testcrowd.R.layout;
 
 import android.app.Fragment;
 import android.os.Bundle;
